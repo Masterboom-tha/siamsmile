@@ -172,17 +172,17 @@ function App() {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>รายละเอียดนักเรียน</h1>
+      <h1>Students Details</h1>
       <Button
         variant="contained"
         color="primary"
         style={{ marginBottom: '10px' }}
         onClick={() => handleOpenModal('add')}
       >
-        เพิ่มนักเรียนใหม่
+        ADD NEW STUDENT
       </Button>
       <TextField
-        label="ค้นหา"
+        label="Search"
         variant="outlined"
         fullWidth
         style={{ marginBottom: '20px' }}
@@ -198,10 +198,10 @@ function App() {
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell>ชื่อ</TableCell>
-              <TableCell>ที่อยู่</TableCell>
-              <TableCell>คะแนน</TableCell>
-              <TableCell>การดำเนินการ</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Address</TableCell>
+              <TableCell>Marks</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -241,27 +241,27 @@ function App() {
         <Box sx={style}>
           {modalType === 'view' && (
             <>
-              <h2>รายละเอียดนักเรียน</h2>
+              <h2>Student Details</h2>
               <p>
-                <strong>ชื่อ:</strong> {currentStudent?.name}
+                <strong>Name:</strong> {currentStudent?.name}
               </p>
               <p>
-                <strong>ที่อยู่:</strong> {currentStudent?.address}
+                <strong>Address:</strong> {currentStudent?.address}
               </p>
               <p>
-                <strong>คะแนน:</strong> {currentStudent?.marks}
+                <strong>Marks:</strong> {currentStudent?.marks}
               </p>
               <Button variant="contained" onClick={handleCloseModal}>
-                ปิด
+                Close
               </Button>
             </>
           )}
 
           {modalType === 'edit' && (
             <>
-              <h2>แก้ไขข้อมูลนักเรียน</h2>
+              <h2>Edit Student</h2>
               <TextField
-                label="ชื่อ"
+                label="Name"
                 name="name"
                 value={currentStudent?.name || ''}
                 onChange={handleInputChange}
@@ -269,7 +269,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="ที่อยู่"
+                label="Address"
                 name="address"
                 value={currentStudent?.address || ''}
                 onChange={handleInputChange}
@@ -277,7 +277,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="คะแนน"
+                label="Marks"
                 name="marks"
                 type="number"
                 value={currentStudent?.marks || ''}
@@ -301,7 +301,7 @@ function App() {
                 }}
               />
               <Button variant="contained" color="primary" onClick={handleEditStudent}>
-                บันทึก
+                Save
               </Button>
               <Button
                 variant="outlined"
@@ -309,16 +309,16 @@ function App() {
                 onClick={handleCloseModal}
                 style={{ marginLeft: '10px' }}
               >
-                ยกเลิก
+                Cancel
               </Button>
             </>
           )}
 
           {modalType === 'add' && (
             <>
-              <h2>เพิ่มนักเรียนใหม่</h2>
+              <h2>Add New Student</h2>
               <TextField
-                label="ชื่อ"
+                label="Name"
                 name="name"
                 value={currentStudent?.name || ''}
                 onChange={handleInputChange}
@@ -326,7 +326,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="ที่อยู่"
+                label="Address"
                 name="address"
                 value={currentStudent?.address || ''}
                 onChange={handleInputChange}
@@ -334,7 +334,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="คะแนน"
+                label="Marks"
                 name="marks"
                 type="number"
                 value={currentStudent?.marks || ''}
@@ -358,7 +358,7 @@ function App() {
                 }}
               />
               <Button variant="contained" color="primary" onClick={handleAddStudent}>
-                เพิ่ม
+                Add
               </Button>
               <Button
                 variant="outlined"
@@ -366,19 +366,19 @@ function App() {
                 onClick={handleCloseModal}
                 style={{ marginLeft: '10px' }}
               >
-                ยกเลิก
+                Cancel
               </Button>
             </>
           )}
 
           {modalType === 'confirmDelete' && (
             <>
-              <h2>ยืนยันการลบ</h2>
+              <h2>Confirm Delete</h2>
               <p>
-                คุณแน่ใจหรือไม่ว่าต้องการลบ <strong>{currentStudent?.name}</strong>?
+                Are you sure you want to delete <strong>{currentStudent?.name}</strong>?
               </p>
               <Button variant="contained" color="error" onClick={confirmDeleteStudent}>
-                ลบ
+                Delete
               </Button>
               <Button
                 variant="outlined"
@@ -386,7 +386,7 @@ function App() {
                 onClick={handleCloseModal}
                 style={{ marginLeft: '10px' }}
               >
-                ยกเลิก
+                Cancel
               </Button>
             </>
           )}
