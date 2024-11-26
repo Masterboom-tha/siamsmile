@@ -64,19 +64,19 @@ function App() {
       });
   }, []);
 
-  // ฟังก์ชันจัดการการค้นหา
+  //การค้นหา
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // ฟังก์ชันเปิดโมดอล
+  //เปิดโมดอล
   const handleOpenModal = (type, student = null) => {
     setModalType(type);
     setCurrentStudent(student);
     setOpenModal(true);
   };
 
-  // ฟังก์ชันปิดโมดอล
+  
   const handleCloseModal = () => {
     setOpenModal(false);
     setCurrentStudent(null);
@@ -88,7 +88,7 @@ function App() {
     setCurrentStudent({ ...currentStudent, [name]: value });
   };
 
-  // ฟังก์ชันแก้ไขข้อมูลนักเรียน
+ 
   const handleEditStudent = () => {
     axios
       .put(
@@ -110,7 +110,7 @@ function App() {
       });
   };
 
-  // ฟังก์ชันลบข้อมูลนักเรียนหลังจากยืนยัน
+
   const confirmDeleteStudent = () => {
     axios
       .delete(
@@ -129,7 +129,7 @@ function App() {
       });
   };
 
-  // ฟังก์ชันเปิดโมดอลยืนยันการลบ
+
   const handleDeleteStudent = (student) => {
     handleOpenModal("confirmDelete", student);
   };
@@ -180,7 +180,7 @@ function App() {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  // ฟังก์ชันกรองนักเรียนตามคำค้นหา
+  //กรองนักเรียนตามคำค้นหา
   const filteredStudents = students.filter(
     (student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -197,8 +197,6 @@ function App() {
       }}
     >
       {" "}
-      {/* ใช้ Container เพื่อจัดการความกว้าง */}
-      {/* ห่อหุ้มข้อความและปุ่มใน Box เพื่อจัดวางให้อยู่ในบรรทัดเดียวกัน */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -228,7 +226,7 @@ function App() {
       <TableContainer
         component={Paper}
         sx={{
-          maxHeight: 400, mb:4 // ปรับค่าตามความสูงของแถว (ประมาณ 8 แถว)
+          maxHeight: 400, mb:4 // 
         }}
       >
         <Table stickyHeader size="small" aria-label="students table">
@@ -282,7 +280,7 @@ function App() {
         </Table>
       </TableContainer>
 
-      {/* โมดอลสำหรับดู แก้ไข เพิ่ม ยืนยันการลบ */}
+
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={style}>
           {modalType === "view" && (
