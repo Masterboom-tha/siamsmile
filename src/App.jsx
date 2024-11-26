@@ -14,12 +14,13 @@ import {
   Modal,
   Box,
   Snackbar,
-  Alert, // Import Alert for enhanced Snackbar
+  Alert, // นำเข้า Alert สำหรับ Snackbar ที่พัฒนาขึ้น
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+// สไตล์สำหรับโมดอล
 const style = {
   position: 'absolute',
   top: '50%',
@@ -33,13 +34,18 @@ const style = {
 };
 
 function App() {
+  // สถานะของนักเรียน
   const [students, setStudents] = useState([]);
+  // สถานะของคำค้นหา
   const [searchTerm, setSearchTerm] = useState('');
+  // สถานะการเปิดปิดโมดอล
   const [openModal, setOpenModal] = useState(false);
-  const [modalType, setModalType] = useState(''); // Modal ประเภทต่างๆ
+  // ประเภทของโมดอล ('view', 'edit', 'add', 'confirmDelete')
+  const [modalType, setModalType] = useState('');
+  // ข้อมูลนักเรียนปัจจุบันที่ถูกเลือก
   const [currentStudent, setCurrentStudent] = useState(null);
 
-  // Snackbar state
+  // สถานะของ Snackbar
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -47,36 +53,41 @@ function App() {
   });
 
   useEffect(() => {
-    // Fetch data using axios
+    // ดึงข้อมูลโดยใช้ axios
     axios
       .get('https://67453708b4e2e04abea519c3.mockapi.io/studentslist')
       .then((response) => setStudents(response.data))
       .catch((error) => {
-        console.error('Error fetching data:', error);
-        showSnackbar('Error fetching students data', 'error');
+        console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+        showSnackbar('เกิดข้อผิดพลาดในการดึงข้อมูลนักเรียน', 'error');
       });
   }, []);
 
+  // ฟังก์ชันจัดการการค้นหา
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
 
+  // ฟังก์ชันเปิดโมดอล
   const handleOpenModal = (type, student = null) => {
     setModalType(type);
     setCurrentStudent(student);
     setOpenModal(true);
   };
 
+  // ฟังก์ชันปิดโมดอล
   const handleCloseModal = () => {
     setOpenModal(false);
     setCurrentStudent(null);
   };
 
+  // ฟังก์ชันจัดการการเปลี่ยนแปลงของอินพุต
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentStudent({ ...currentStudent, [name]: value });
   };
 
+  // ฟังก์ชันแก้ไขข้อมูลนักเรียน
   const handleEditStudent = () => {
     axios
       .put(`https://67453708b4e2e04abea519c3.mockapi.io/studentslist/${currentStudent.id}`, currentStudent)
@@ -85,38 +96,39 @@ function App() {
           prevStudents.map((student) => (student.id === currentStudent.id ? response.data : student))
         );
         handleCloseModal();
-        showSnackbar('Student updated successfully', 'success');
+        showSnackbar('แก้ไขข้อมูลนักเรียนเรียบร้อยแล้ว', 'success');
       })
       .catch((error) => {
-        console.error('Error updating student:', error);
-        showSnackbar('Error updating student', 'error');
+        console.error('เกิดข้อผิดพลาดในการแก้ไขข้อมูลนักเรียน:', error);
+        showSnackbar('เกิดข้อผิดพลาดในการแก้ไขข้อมูลนักเรียน', 'error');
       });
   };
 
-  // New function to handle the actual deletion after confirmation
+  // ฟังก์ชันลบข้อมูลนักเรียนหลังจากยืนยัน
   const confirmDeleteStudent = () => {
     axios
       .delete(`https://67453708b4e2e04abea519c3.mockapi.io/studentslist/${currentStudent.id}`)
       .then(() => {
         setStudents((prevStudents) => prevStudents.filter((student) => student.id !== currentStudent.id));
         handleCloseModal();
-        showSnackbar('Student deleted successfully', 'success');
+        showSnackbar('ลบข้อมูลนักเรียนเรียบร้อยแล้ว', 'success');
       })
       .catch((error) => {
-        console.error('Error deleting student:', error);
-        showSnackbar('Error deleting student', 'error');
+        console.error('เกิดข้อผิดพลาดในการลบข้อมูลนักเรียน:', error);
+        showSnackbar('เกิดข้อผิดพลาดในการลบข้อมูลนักเรียน', 'error');
       });
   };
 
-  // Modify handleDeleteStudent to open confirmation modal
+  // ฟังก์ชันเปิดโมดอลยืนยันการลบ
   const handleDeleteStudent = (student) => {
     handleOpenModal('confirmDelete', student);
   };
 
+  // ฟังก์ชันเพิ่มข้อมูลนักเรียนใหม่
   const handleAddStudent = () => {
-    // Ensure that currentStudent is not null and has necessary fields
+    // ตรวจสอบว่าข้อมูลครบถ้วน
     if (!currentStudent || !currentStudent.name || !currentStudent.address || !currentStudent.marks) {
-      showSnackbar('Please fill in all fields', 'warning');
+      showSnackbar('กรุณากรอกข้อมูลให้ครบทุกช่อง', 'warning');
       return;
     }
 
@@ -125,15 +137,15 @@ function App() {
       .then((response) => {
         setStudents((prevStudents) => [...prevStudents, response.data]);
         handleCloseModal();
-        showSnackbar('Student added successfully', 'success');
+        showSnackbar('เพิ่มข้อมูลนักเรียนเรียบร้อยแล้ว', 'success');
       })
       .catch((error) => {
-        console.error('Error adding student:', error);
-        showSnackbar('Error adding student', 'error');
+        console.error('เกิดข้อผิดพลาดในการเพิ่มข้อมูลนักเรียน:', error);
+        showSnackbar('เกิดข้อผิดพลาดในการเพิ่มข้อมูลนักเรียน', 'error');
       });
   };
 
-  // Function to show Snackbar
+  // ฟังก์ชันแสดง Snackbar
   const showSnackbar = (message, severity) => {
     setSnackbar({
       open: true,
@@ -142,7 +154,7 @@ function App() {
     });
   };
 
-  // Function to handle Snackbar close
+  // ฟังก์ชันปิด Snackbar
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -150,26 +162,27 @@ function App() {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  // ฟังก์ชันกรองนักเรียนตามคำค้นหา
   const filteredStudents = students.filter(
     (student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.address.toLowerCase().includes(searchTerm.toLowerCase()) 
-      // student.marks.toString().includes(searchTerm)
+      student.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.marks.toString().includes(searchTerm)
   );
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Students Details</h1>
+      <h1>รายละเอียดนักเรียน</h1>
       <Button
         variant="contained"
         color="primary"
         style={{ marginBottom: '10px' }}
         onClick={() => handleOpenModal('add')}
       >
-        Add New Student
+        เพิ่มนักเรียนใหม่
       </Button>
       <TextField
-        label="Search"
+        label="ค้นหา"
         variant="outlined"
         fullWidth
         style={{ marginBottom: '20px' }}
@@ -178,17 +191,17 @@ function App() {
       <TableContainer
         component={Paper}
         sx={{
-          maxHeight: 600, // Adjust this value based on row height
+          maxHeight: 400, // ปรับค่าตามความสูงของแถว (ประมาณ 8 แถว)
         }}
       >
-        <Table stickyHeader size="medium" aria-label="students table">
+        <Table stickyHeader size="small" aria-label="students table">
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Marks</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell>ชื่อ</TableCell>
+              <TableCell>ที่อยู่</TableCell>
+              <TableCell>คะแนน</TableCell>
+              <TableCell>การดำเนินการ</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -215,7 +228,7 @@ function App() {
             ) : (
               <TableRow>
                 <TableCell colSpan={5} align="center">
-                  No students found.
+                  ไม่พบข้อมูลนักเรียน
                 </TableCell>
               </TableRow>
             )}
@@ -223,32 +236,32 @@ function App() {
         </Table>
       </TableContainer>
 
-      {/* Modal for View/Edit/Add/Confirm Delete */}
+      {/* โมดอลสำหรับดู แก้ไข เพิ่ม ยืนยันการลบ */}
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box sx={style}>
           {modalType === 'view' && (
             <>
-              <h2>Student Details</h2>
+              <h2>รายละเอียดนักเรียน</h2>
               <p>
-                <strong>Name:</strong> {currentStudent?.name}
+                <strong>ชื่อ:</strong> {currentStudent?.name}
               </p>
               <p>
-                <strong>Address:</strong> {currentStudent?.address}
+                <strong>ที่อยู่:</strong> {currentStudent?.address}
               </p>
               <p>
-                <strong>Marks:</strong> {currentStudent?.marks}
+                <strong>คะแนน:</strong> {currentStudent?.marks}
               </p>
               <Button variant="contained" onClick={handleCloseModal}>
-                Close
+                ปิด
               </Button>
             </>
           )}
 
           {modalType === 'edit' && (
             <>
-              <h2>Edit Student</h2>
+              <h2>แก้ไขข้อมูลนักเรียน</h2>
               <TextField
-                label="Name"
+                label="ชื่อ"
                 name="name"
                 value={currentStudent?.name || ''}
                 onChange={handleInputChange}
@@ -256,7 +269,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Address"
+                label="ที่อยู่"
                 name="address"
                 value={currentStudent?.address || ''}
                 onChange={handleInputChange}
@@ -264,7 +277,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Marks"
+                label="คะแนน"
                 name="marks"
                 type="number"
                 value={currentStudent?.marks || ''}
@@ -276,19 +289,19 @@ function App() {
                   pattern: '[0-9]*',
                 }}
                 sx={{
-                  // Hide spin buttons in Chrome, Safari, Edge, Opera
+                  // ซ่อนปุ่มลูกศรใน Chrome, Safari, Edge, Opera
                   '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
                     '-webkit-appearance': 'none',
                     margin: 0,
                   },
-                  // Hide spin buttons in Firefox
+                  // ซ่อนปุ่มลูกศรใน Firefox
                   '& input[type=number]': {
                     '-moz-appearance': 'textfield',
                   },
                 }}
               />
               <Button variant="contained" color="primary" onClick={handleEditStudent}>
-                Save
+                บันทึก
               </Button>
               <Button
                 variant="outlined"
@@ -296,16 +309,16 @@ function App() {
                 onClick={handleCloseModal}
                 style={{ marginLeft: '10px' }}
               >
-                Cancel
+                ยกเลิก
               </Button>
             </>
           )}
 
           {modalType === 'add' && (
             <>
-              <h2>Add New Student</h2>
+              <h2>เพิ่มนักเรียนใหม่</h2>
               <TextField
-                label="Name"
+                label="ชื่อ"
                 name="name"
                 value={currentStudent?.name || ''}
                 onChange={handleInputChange}
@@ -313,7 +326,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Address"
+                label="ที่อยู่"
                 name="address"
                 value={currentStudent?.address || ''}
                 onChange={handleInputChange}
@@ -321,7 +334,7 @@ function App() {
                 style={{ marginBottom: '10px' }}
               />
               <TextField
-                label="Marks"
+                label="คะแนน"
                 name="marks"
                 type="number"
                 value={currentStudent?.marks || ''}
@@ -333,19 +346,19 @@ function App() {
                   pattern: '[0-9]*',
                 }}
                 sx={{
-                  // Hide spin buttons in Chrome, Safari, Edge, Opera
+                  // ซ่อนปุ่มลูกศรใน Chrome, Safari, Edge, Opera
                   '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
                     '-webkit-appearance': 'none',
                     margin: 0,
                   },
-                  // Hide spin buttons in Firefox
+                  // ซ่อนปุ่มลูกศรใน Firefox
                   '& input[type=number]': {
                     '-moz-appearance': 'textfield',
                   },
                 }}
               />
               <Button variant="contained" color="primary" onClick={handleAddStudent}>
-                Add
+                เพิ่ม
               </Button>
               <Button
                 variant="outlined"
@@ -353,19 +366,19 @@ function App() {
                 onClick={handleCloseModal}
                 style={{ marginLeft: '10px' }}
               >
-                Cancel
+                ยกเลิก
               </Button>
             </>
           )}
 
           {modalType === 'confirmDelete' && (
             <>
-              <h2>Confirm Deletion</h2>
+              <h2>ยืนยันการลบ</h2>
               <p>
-                Are you sure you want to delete <strong>{currentStudent?.name}</strong>?
+                คุณแน่ใจหรือไม่ว่าต้องการลบ <strong>{currentStudent?.name}</strong>?
               </p>
               <Button variant="contained" color="error" onClick={confirmDeleteStudent}>
-                Delete
+                ลบ
               </Button>
               <Button
                 variant="outlined"
@@ -373,17 +386,17 @@ function App() {
                 onClick={handleCloseModal}
                 style={{ marginLeft: '10px' }}
               >
-                Cancel
+                ยกเลิก
               </Button>
             </>
           )}
         </Box>
       </Modal>
 
-      {/* Snackbar for Notifications */}
+      {/* Snackbar สำหรับการแจ้งเตือน */}
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={3000} // Duration in milliseconds
+        autoHideDuration={3000} // ระยะเวลาในหน่วยมิลลิวินาที
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
